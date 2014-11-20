@@ -54,12 +54,11 @@ public class TelaCadastro {
         btnConfirmar.setOnAction(event -> {
             PessoaBusinnes businnes = new PessoaBusinnes();
 
-            edtCodigo.textProperty().setValue(null);
-            edtNome.textProperty().setValue(null);
-            edtEmail.textProperty().setValue(null);
-
             if (estadoTela.equals(EstadoTela.INSERINDO)) {
                 businnes.addNovaPessoa(edtCodigo.getText(), edtNome.getText(), edtEmail.getText());
+                edtCodigo.textProperty().setValue(null);
+                edtNome.textProperty().setValue(null);
+                edtEmail.textProperty().setValue(null);
             } else if (estadoTela.equals(EstadoTela.EDITANDO)) {
                 businnes.alterarPessoa(this.entidade);
                 try {
