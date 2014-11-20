@@ -4,6 +4,7 @@ import sample.basededados.BancoDeDadosEmMemoria;
 import sample.modelo.Pessoa;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by Ton on 22/10/2014.
@@ -30,5 +31,23 @@ public class PessoaDao {
         }
 
         return null;
+    }
+
+    public void remover(Pessoa pessoa) {
+        banco.tbPessoas.remove(pessoa);
+    }
+
+    public void alterarPessoa(Pessoa pessoaSelecionada) {
+
+        banco.tbPessoas.stream().forEach(new Consumer<Pessoa>() {
+            @Override
+            public void accept(Pessoa pessoa) {
+                if (pessoa.getCodigo().equals(pessoaSelecionada.getCodigo())) {
+                    pessoa.setNome(pessoaSelecionada.getNome());
+                    pessoa.setEmail(pessoaSelecionada.getEmail());
+                }
+            }
+        });
+
     }
 }

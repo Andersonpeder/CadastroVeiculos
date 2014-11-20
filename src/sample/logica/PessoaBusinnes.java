@@ -33,4 +33,12 @@ public class PessoaBusinnes {
         }
 
     }
+
+    public void excluirPessoa(Pessoa pessoa) {
+        dao.remover(pessoa);
+    }
+
+    public void alterarPessoa(Pessoa pessoa) {
+        dao.alterarPessoa(pessoa);
+    }
 }
