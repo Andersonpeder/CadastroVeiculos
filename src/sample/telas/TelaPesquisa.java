@@ -7,13 +7,15 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import sample.basededados.BancoDeDadosEmMemoria;
-import sample.logica.PessoaBusinnes;
-import sample.modelo.Pessoa;
+import sample.modelo.Carro;
+import sample.logica.CarroBusinnes;
 
 import static javafx.scene.layout.Priority.ALWAYS;
 
@@ -22,12 +24,12 @@ import static javafx.scene.layout.Priority.ALWAYS;
  */
 public class TelaPesquisa extends Application {
 
-    private ObservableList<Pessoa> dadosGrid = FXCollections.observableArrayList();
+    private ObservableList<Carro> dadosGrid = FXCollections.observableArrayList();
 
 
     private BorderPane borderPane = new BorderPane();
 
-    private TableView<Pessoa> gridPessoas;
+    private TableView<Carro> gridCarros;
 
     private Stage stage;
 
@@ -35,9 +37,9 @@ public class TelaPesquisa extends Application {
     public void start(Stage palco) throws Exception {
 
 
-        dadosGrid.addAll(BancoDeDadosEmMemoria.getInstance().tbPessoas);
+        dadosGrid.addAll(BancoDeDadosEmMemoria.getInstance().tbCarros);
 
-        palco.setTitle("Pesquisa");
+        palco.setTitle("PESQUISA DE CARROS");
 
         borderPane.paddingProperty().setValue(new Insets(10));
         borderPane.setPrefSize(780, 590);
@@ -46,9 +48,9 @@ public class TelaPesquisa extends Application {
 
         borderPane.setTop(boxCampoDePesquisa);
 
-        gridPessoas = montaGridPessoas();
+        gridCarros = montaGridPessoas();
 
-        borderPane.setCenter(gridPessoas);
+        borderPane.setCenter(gridCarros);
 
 
         ToolBar toolBar = montaBarraDeFerramentas();
@@ -66,8 +68,13 @@ public class TelaPesquisa extends Application {
         ToolBar toolBar = new ToolBar();
 
         Button btnNovo = new Button("Novo");
+        btnNovo.setStyle("-fx-base: rgb("+(50)+","+(255)+","+(0)+");");
         Button btnAlterar = new Button("Alterar");
+        btnAlterar.setStyle("-fx-base: rgb("+(204)+","+(255)+","+(0)+");");
         Button btnExcluir = new Button("Excluir");
+        btnExcluir.setStyle("-fx-base: rgb("+(255)+","+(0)+","+(0)+");");
+
+
 
         toolBar.getItems().addAll(btnNovo, btnAlterar, btnExcluir);
 
@@ -81,18 +88,18 @@ public class TelaPesquisa extends Application {
         btnExcluir.setOnAction(click -> {
 
 
-            if (gridPessoas.getSelectionModel().getSelectedItem() != null) {
-                Pessoa pessoa = gridPessoas.getSelectionModel().getSelectedItems().get(0);
-                PessoaBusinnes businnes = new PessoaBusinnes();
-                businnes.excluirPessoa(pessoa);
-                //atualizar a tela
+            if (gridCarros.getSelectionModel().getSelectedItem() != null) {
+                Carro carro = gridCarros.getSelectionModel().getSelectedItems().get(0);
+                CarroBusinnes businnes = new CarroBusinnes();
+                businnes.excluirCarro(carro);
+                //atualizar a teoala
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         dadosGrid = FXCollections.observableArrayList();
-                        dadosGrid.addAll(BancoDeDadosEmMemoria.getInstance().tbPessoas);
-                        gridPessoas.setItems(null);
-                        gridPessoas.setItems(dadosGrid);
+                        dadosGrid.addAll(BancoDeDadosEmMemoria.getInstance().tbCarros);
+                        gridCarros.setItems(null);
+                        gridCarros.setItems(dadosGrid);
                     }
                 });
 
@@ -102,15 +109,15 @@ public class TelaPesquisa extends Application {
 
 
         btnAlterar.setOnAction(click -> {
-            if (gridPessoas.getSelectionModel().getSelectedItem() != null) {
-                Pessoa pessoa = gridPessoas.getSelectionModel().getSelectedItems().get(0);
+            if (gridCarros.getSelectionModel().getSelectedItem() != null) {
+                Carro carro = gridCarros.getSelectionModel().getSelectedItems().get(0);
 
                 //chamar a tela de cadastro
 
-                invocarTelaDeCadastro(pessoa);
+                invocarTelaDeCadastro(carro);
 
-                PessoaBusinnes businnes = new PessoaBusinnes();
-                businnes.alterarPessoa(pessoa);
+                CarroBusinnes businnes = new CarroBusinnes();
+                businnes.alterarCarro(carro);
 
 
             }
@@ -120,14 +127,14 @@ public class TelaPesquisa extends Application {
         return toolBar;
     }
 
-    private void invocarTelaDeCadastro(Pessoa pessoa) {
+    private void invocarTelaDeCadastro(Carro carro) {
         TelaCadastro cadastro = new TelaCadastro(stage);
         stage.setScene(new Scene(cadastro.getTela(), 800, 600));
 
-        if (pessoa == null) {
+        if (carro == null) {
             cadastro.iniciaInsercao();
         } else {
-            cadastro.iniciaAlteracao(pessoa);
+            cadastro.iniciaAlteracao(carro);
         }
 
     }
@@ -145,19 +152,20 @@ public class TelaPesquisa extends Application {
 
         //botão de pesquisa
         Button btnPesquisa = new Button("Busca");
+        btnPesquisa.setStyle("-fx-base: rgb("+(20)+","+(20)+","+(20)+");");
         boxCampoDePesquisa.getChildren().add(ct);
         boxCampoDePesquisa.getChildren().add(btnPesquisa);
 
         btnPesquisa.setOnAction(action -> {
             String chave = ct.textProperty().get();
-            PessoaBusinnes businnes = new PessoaBusinnes();
+            CarroBusinnes businnes = new CarroBusinnes();
             try {
-                Pessoa pessoa = businnes.pesquisaPorCodigo(chave);
-                if (pessoa != null) {
+                Carro carro = businnes.pesquisaPorCodigo(chave);
+                if (carro != null) {
                     dadosGrid.clear();
-                    dadosGrid.add(pessoa);
+                    dadosGrid.add(carro);
                 } else {
-                    System.out.println(" Pessoa não encontrada");
+                    System.out.println(" Carro não encontrado");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -174,33 +182,59 @@ public class TelaPesquisa extends Application {
         return boxCampoDePesquisa;
     }
 
-    private TableView<Pessoa> montaGridPessoas() {
+    private TableView<Carro> montaGridPessoas() {
 
         //Grid de pesquisa com Table view
         TableColumn colunaCodigo = new TableColumn();
         colunaCodigo.minWidthProperty().setValue(100);
         //cabecalho da coluna
-        colunaCodigo.setText("Código");
+        colunaCodigo.setText("Codigo");
         colunaCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
 
-        TableColumn colunaNome = new TableColumn();
-        colunaNome.minWidthProperty().setValue(100);
-        colunaNome.setText("Nome");
-        colunaNome.setCellValueFactory(new PropertyValueFactory("nome"));
+        TableColumn colunaModelo = new TableColumn();
+        colunaModelo.minWidthProperty().setValue(100);
+        colunaModelo.setText("Modelo");
+        colunaModelo.setCellValueFactory(new PropertyValueFactory("modelo"));
 
-        TableColumn colunaEmail = new TableColumn();
-        colunaEmail.minWidthProperty().setValue(100);
-        colunaEmail.setText("Email");
-        colunaEmail.setMinWidth(200);
-        colunaEmail.setCellValueFactory(new PropertyValueFactory("email"));
+        TableColumn colunaMarca = new TableColumn();
+        colunaMarca.minWidthProperty().setValue(100);
+        colunaMarca.setText("Marca");
+        colunaMarca.setMinWidth(200);
+        colunaMarca.setCellValueFactory(new PropertyValueFactory("marca"));
 
-        TableView<Pessoa> gridPessoas = new TableView();
+        TableColumn colunaQtdportas = new TableColumn();
+        colunaQtdportas.minWidthProperty().setValue(100);
+        //cabecalho da coluna
+        colunaQtdportas.setText("Qtdportas");
+        colunaQtdportas.setCellValueFactory(new PropertyValueFactory<>("qtdportas"));
 
-        gridPessoas.getColumns().addAll(colunaCodigo, colunaNome, colunaEmail);
-        gridPessoas.setItems(dadosGrid);
+        TableColumn colunaCor = new TableColumn();
+        colunaCor.minWidthProperty().setValue(100);
+        colunaCor.setText("Cor");
+        colunaCor.setCellValueFactory(new PropertyValueFactory("cor"));
+
+        TableColumn colunaProprietario = new TableColumn();
+        colunaProprietario.minWidthProperty().setValue(100);
+        colunaProprietario.setText("Proprietario");
+        colunaProprietario.setMinWidth(200);
+        colunaProprietario.setCellValueFactory(new PropertyValueFactory("proprietario"));
+
+        TableColumn colunaPlaca = new TableColumn();
+        colunaPlaca.minWidthProperty().setValue(100);
+        colunaPlaca.setText("Placa");
+        colunaPlaca.setMinWidth(200);
+        colunaPlaca.setCellValueFactory(new PropertyValueFactory("placa"));
 
 
-        return gridPessoas;
+        TableView<Carro> gridCarros = new TableView();
+
+        gridCarros.getColumns().addAll(colunaCodigo, colunaModelo, colunaMarca, colunaQtdportas, colunaCor,
+                colunaProprietario,colunaPlaca);
+
+        gridCarros.setItems(dadosGrid);
+
+
+        return gridCarros;
     }
 
 
@@ -210,9 +244,9 @@ public class TelaPesquisa extends Application {
             @Override
             public void run() {
                 dadosGrid = FXCollections.observableArrayList();
-                dadosGrid.addAll(BancoDeDadosEmMemoria.getInstance().tbPessoas);
-                gridPessoas.setItems(null);
-                gridPessoas.setItems(dadosGrid);
+                dadosGrid.addAll(BancoDeDadosEmMemoria.getInstance().tbCarros);
+                gridCarros.setItems(null);
+                gridCarros.setItems(dadosGrid);
             }
         });
     }

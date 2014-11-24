@@ -6,8 +6,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import sample.logica.PessoaBusinnes;
-import sample.modelo.Pessoa;
+import sample.logica.CarroBusinnes;
+import sample.modelo.Carro;
 
 /**
  * Created by Ton on 19/11/2014.
@@ -15,12 +15,19 @@ import sample.modelo.Pessoa;
 public class TelaCadastro {
 
     private Stage palco;
+
     private VBox janela;
+
     private EstadoTela estadoTela = EstadoTela.INSERINDO;
-    private Pessoa entidade;
+    private Carro entidade;
     private TextField edtCodigo = new TextField();
-    private TextField edtNome = new TextField();
-    private TextField edtEmail = new TextField();
+    private TextField edtModelo = new TextField();
+    private TextField edtMarca = new TextField();
+    private TextField edtQtdportas = new TextField();
+    private TextField edtCor = new TextField();
+    private TextField edtProprietario = new TextField();
+    private TextField edtPlaca = new TextField();
+
 
 
     public TelaCadastro(Stage palco) {
@@ -31,36 +38,53 @@ public class TelaCadastro {
         Label lblCodigo = new Label("Codigo:");
 
 
-        edtCodigo.promptTextProperty().setValue("informe o código");
+        edtCodigo.promptTextProperty().setValue("informe o codigo");
         janela.getChildren().addAll(lblCodigo, edtCodigo);
         //adicionando componentes ao janela principal
-        Label lblNome = new Label();
-        lblNome.setText("Nome: ");
+        Label lblModelo = new Label();
+        lblModelo.setText("Modelo: ");
 
 
         //adicionando componentes ao janela principal
-        janela.getChildren().add(lblNome);
-        janela.getChildren().add(edtNome);
+        janela.getChildren().add(lblModelo);
+        janela.getChildren().add(edtModelo);
         //adicionando componentes ao janela principal
-        Label lblEmail = new Label("Email:");
 
-        edtEmail.promptTextProperty().setValue("Digite aqui o email");
-        janela.getChildren().addAll(lblEmail, edtEmail);
+        Label lblMarca = new Label("Marca:");
+        edtMarca.promptTextProperty().setValue("Marca do veiculo");
+        janela.getChildren().addAll(lblMarca, edtMarca);
+
+        Label lblQtdportas = new Label("Qtdportas:");
+        edtQtdportas.promptTextProperty().setValue("Qtd de portas");
+        janela.getChildren().addAll(lblQtdportas, edtQtdportas);
+
+        Label lblCor = new Label("Cor:");
+        edtCor.promptTextProperty().setValue("Cor do veiculo");
+        janela.getChildren().addAll(lblCor, edtCor);
+
+        Label lblProprietario = new Label("Proprietario:");
+        edtProprietario.promptTextProperty().setValue("Proprietario do veiculo");
+        janela.getChildren().addAll(lblProprietario, edtProprietario);
+
+        Label lblPlaca = new Label("Placa:");
+        edtPlaca.promptTextProperty().setValue("Placa do veiculo");
+        janela.getChildren().addAll(lblPlaca, edtPlaca);
 
         // controles
         Button btnConfirmar = new Button("Confirmar");
+        btnConfirmar.setStyle("-fx-base: rgb("+(51)+","+(255)+","+(0)+");");
 
 
         btnConfirmar.setOnAction(event -> {
-            PessoaBusinnes businnes = new PessoaBusinnes();
+            CarroBusinnes businnes = new CarroBusinnes();
 
             if (estadoTela.equals(EstadoTela.INSERINDO)) {
-                businnes.addNovaPessoa(edtCodigo.getText(), edtNome.getText(), edtEmail.getText());
-                edtCodigo.textProperty().setValue(null);
-                edtNome.textProperty().setValue(null);
-                edtEmail.textProperty().setValue(null);
+                businnes.addNovoCarro(edtCodigo.getText(), edtModelo.getText(), edtMarca.getText(), edtQtdportas.getText(), edtCor.getText(),edtProprietario.getText(),edtPlaca.getText());
+                edtProprietario.textProperty().setValue(null);
+                edtPlaca.textProperty().setValue(null);
+
             } else if (estadoTela.equals(EstadoTela.EDITANDO)) {
-                businnes.alterarPessoa(this.entidade);
+                businnes.alterarCarro(this.entidade);
                 try {
                     abrirTelaDePesquisa(palco);
                 } catch (Exception e) {
@@ -70,6 +94,7 @@ public class TelaCadastro {
         });
 
         Button btnJanelaPesquisa = new Button("Pesquisa");
+        btnJanelaPesquisa.setStyle("-fx-base: rgb("+(204)+","+(255)+","+(0)+");");
 
         ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(btnConfirmar, btnJanelaPesquisa);
@@ -105,12 +130,17 @@ public class TelaCadastro {
         this.estadoTela = EstadoTela.INSERINDO;
     }
 
-    public void iniciaAlteracao(Pessoa pessoa) {
-        this.entidade = pessoa;
+    public void iniciaAlteracao(Carro carro) {
+        this.entidade = carro;
         this.estadoTela = EstadoTela.EDITANDO;
-        edtCodigo.textProperty().setValue(pessoa.getCodigo());
-        edtNome.textProperty().setValue(pessoa.getNome());
-        edtEmail.textProperty().setValue(pessoa.getEmail());
+        edtCodigo.textProperty().setValue(carro.getCodigo());
+        edtModelo.textProperty().setValue(carro.getModelo());
+        edtMarca.textProperty().setValue(carro.getMarca());
+        edtQtdportas.textProperty().setValue(carro.getCodigo());
+        edtCor.textProperty().setValue(carro.getModelo());
+        edtProprietario.textProperty().setValue(carro.getCodigo());
+        edtPlaca.textProperty().setValue(carro.getModelo());
+
 
     }
 }
